@@ -23,7 +23,7 @@ function CreateBlog() {
     formData.append('title', title);
     formData.append('desc', desc);
     formData.append('category', category);
-
+       console.log(file);
     try {
       const response = await axios.post('http://localhost:5000/add-post', formData, {
         headers: {

@@ -14,8 +14,12 @@ function ViewBlog(props) {
  //   const [vfileshow, setFileshow] = useState("https://i.pinimg.com/736x/90/07/5b/90075b356eb2f0cf95e08b53a719f669.jpg");
     const [isAuthor, setIsAuthor] = useState(false);
     const [comment ,setcomment]=useState("");
+    const[commentdata,setcommentdata]=useState("");
+
+    const loggedInUsername=localStorage.getItem('username');
+    const loggedInUserToken = localStorage.getItem('token');
     useEffect(() => {
-        const loggedInUserToken = localStorage.getItem('token');
+       
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -32,7 +36,42 @@ function ViewBlog(props) {
             .catch(error => {
                 console.error('Error:', error);
             });
+
+
     }, []);
+
+   
+
+    useEffect(() => {
+        const fetchcommentData = async () => {
+          try {
+            const response = await fetch("http://localhost:5000/view-comment", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({_id}) 
+            }) .then(response => response.json())
+            .then(data => {
+                const { comment } = data;
+                setcommentdata(data)
+                // console.log(
+                //     data
+                // );
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            
+        }catch(error) {
+            console.error('Error:', error);
+        };
+    
+        
+      }
+      fetchcommentData();}, []);
+
+//   console.log( commentdata.comments.length);
 
     const handleUpdate = () => {
         // Handle update logic
@@ -54,10 +93,32 @@ function ViewBlog(props) {
         }})
     };
     // console.log(isAuthor);
-    const handlecomment=()=>{
-        console.log("will do")
-        console.log(comment);
-    }
+    const handlecomment = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/comment-blog", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ comment, _id,loggedInUserToken,loggedInUsername }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to post comment');
+            }
+    
+           
+            const data = await response.json();
+            console.log("Comment posted successfully:", data);
+            
+            // Update UI or perform any other actions
+        } catch (error) {
+            console.error("Error posting comment:", error.message);
+           
+        }
+    };
+    
     return (
 <div>
     <ToastContainer />
@@ -103,9 +164,41 @@ function ViewBlog(props) {
     <img className="h-10 px-3 " src="https://www.shutterstock.com/image-vector/comments-icon-on-white-background-260nw-247489372.jpg" alt="Comments icon"></img>
     <textarea onChange={(e)=>setcomment(e.target.value)} className='border border-rounded border-black rounded-md h-12 px-2 py-1 w-80' placeholder='Comment'></textarea>
     <img  className="h-10 px-1 " onClick={handlecomment} src={Arrow}></img>
+    <h1 className='text-red-600 text-lg '>{commentdata.comments&&commentdata.comments.length}</h1>
 </div>
+<div className='mt-2'>
 
 
+<div className='mt-2 bg-gray-100'>
+<div>
+    {commentdata.comments && commentdata.comments.map((comment, index) => (
+        
+         <div className="flex w-full  border rounded-md">
+
+         <div className="p-3">
+             <div className="flex gap-3 items-center">
+                 <img src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                         className="object-cover w-10 h-10 rounded-full border-2 border-emerald-400  shadow-emerald-400" />
+                 <h3 className="font-bold">
+                    {comment.username}
+                     <br/>
+                    
+                 </h3>
+             </div>
+             </div>
+             <p className="text-gray-600 mt-5 px-5">
+            {comment.comment}
+             </p>
+             
+            
+         </div>
+    ))}
+  </div>
+
+
+
+</div>
+</div>
     </div>
    </div>
 

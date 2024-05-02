@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import axios from 'axios';
 import { toast,ToastContainer } from 'react-toastify';
 import { Navbar } from '../Navbar/Navbar';
 
@@ -20,9 +20,11 @@ function UpdateBlog() {
   const uusername = localStorage.getItem('username');
   useEffect(()=>{
     console.log(ufileshow);
+    console.log(ufile);
    },[ufileshow])
   const updatepost = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append('username', uusername);
     formData.append('token', localStorage.getItem('token'));
@@ -30,9 +32,10 @@ function UpdateBlog() {
     formData.append('title', utitle);
     formData.append('desc', udesc);
     formData.append('category', ucategory);
-
+    formData.append('_id',_id);
+  console.log(uusername,utitle,ufile,udesc,ucategory,_id);
     try {
-      const response = await axios.post('http://localhost:5000/add-post', formData, {
+      const response = await axios.post('http://localhost:5000/update-post', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -68,8 +71,8 @@ const handleFileChange = (e) => {
    <>
    <div className="flex flex-col h-screen">
                 <Navbar />
-                <form method='POST' encType="multipart/form-data"  >
-                <img className="w-full h-80" src={`http://localhost:5000${ufileshow}`} alt="oops" />
+                <form method='POST' encType="multipart/form-data"onSubmit={updatepost}>
+                <img className="w-full h-80" src={ufile?ufileshow:`http://localhost:5000${ufileshow}`} alt="oops" />
                 <div className="flex ml-5 mt-3">
                     <div>
                         <label htmlFor="fileInput">
@@ -95,7 +98,7 @@ const handleFileChange = (e) => {
                             type='submit'
                             className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-8 py-2.5 text-center me-2 mb-2 mr-2 mt-5"
                         >
-                            Post
+                            updatePost
                         </button>
                     </div>
                 </div>
