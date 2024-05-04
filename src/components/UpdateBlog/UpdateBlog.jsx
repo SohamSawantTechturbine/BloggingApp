@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { toast,ToastContainer } from 'react-toastify';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from '../Navbar/Navbar';
 
 
@@ -43,6 +45,7 @@ function UpdateBlog() {
 
       if (response.status === 200) {
         toast.success('Posted successfully');
+        navigate("/home")
       } else {
         toast.error('Failed to post. Please try again later.');
       }
@@ -69,6 +72,7 @@ const handleFileChange = (e) => {
 
   return (
    <>
+   <ToastContainer />
    <div className="flex flex-col h-screen">
                 <Navbar />
                 <form method='POST' encType="multipart/form-data"onSubmit={updatepost}>

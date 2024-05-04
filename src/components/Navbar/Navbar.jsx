@@ -13,6 +13,7 @@ export const Navbar = ({ onSearchChange }) => {
                                        setUSername('user');
                                     //   //  navigate('/');
                                       localStorage.removeItem("token")
+                                      localStorage.removeItem("userid")
                                       setIsLogin(false);
 }
     useEffect(() => {

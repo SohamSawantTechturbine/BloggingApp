@@ -2,20 +2,26 @@ import React, { useState ,useEffect} from 'react';
 import { Navbar } from '../Navbar/Navbar';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-
+import { useAuthContext } from '../Context/Authcontext';
+import { useNavigate } from 'react-router-dom';
 function CreateBlog() {
+  const navigate = useNavigate();
+  const { isLogin } = useAuthContext();
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [category, setCategory] = useState('');
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState("https://i.pinimg.com/736x/90/07/5b/90075b356eb2f0cf95e08b53a719f669.jpg");
   const [fileshow, setFileshow] = useState("https://i.pinimg.com/736x/90/07/5b/90075b356eb2f0cf95e08b53a719f669.jpg");
   const categories = ['Music', 'Movies', 'Sports', 'Tech', 'Fashion'];
   const username = localStorage.getItem('username');
+  const userid=localStorage.getItem('userid');
   useEffect(()=>{
     console.log(fileshow);
    },[fileshow])
   const addPost = async (e) => {
+
     e.preventDefault();
+     if(userid){
     const formData = new FormData();
     formData.append('username', username);
     formData.append('token', localStorage.getItem('token'));
@@ -23,6 +29,7 @@ function CreateBlog() {
     formData.append('title', title);
     formData.append('desc', desc);
     formData.append('category', category);
+    formData.append('loginid',userid);
        console.log(file);
     try {
       const response = await axios.post('http://localhost:5000/add-post', formData, {
@@ -39,6 +46,8 @@ function CreateBlog() {
     } catch (error) {
       console.error('Error adding post:', error);
       toast.error('An error occurred. Please try again later.');
+    }}else{
+      navigate("/")
     }
   };
 
@@ -69,7 +78,7 @@ const handleFileChange = (e) => {
   return (
     <>
      <div className="flex flex-col h-screen">
-                <Navbar />
+                {/* <Navbar /> */}
                 <form method='POST' encType="multipart/form-data" onSubmit={addPost} >
                 <img className="w-full h-80" src={fileshow} alt="oops" />
                 <div className="flex ml-5 mt-3">

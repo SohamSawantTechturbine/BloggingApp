@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Navbar } from '../Navbar/Navbar';
+import { Navbar}  from '../Navbar/Navbar';
 import { useAuthContext } from '../Context/Authcontext';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-function Home() {
+function Home({searchTerm}) {
   const { isLogin } = useAuthContext();
   const [username, setUsername] = useState('user');
+  console.log(searchTerm);
   const [Blog, setBlog] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,8 +43,13 @@ function Home() {
     fetchBlogData();
   }, []);
 
-  const filteredBlog = category ? Blog?.filter(item => item.category === category) : Blog;
-  
+  // const filteredBlog = search ? category ? Blog?.filter(item => item.category === category) : Blog;
+  const filteredBlog = searchTerm
+  ? Blog?.filter(item => item.category.toLowerCase().includes(searchTerm.toLowerCase()))
+  : category
+    ? Blog?.filter(item => item.category === category)
+    : Blog;
+
   const handleview = (blog) => {
     console.log(blog);
     navigate('/viewblog', { state: { blog } });
@@ -51,7 +57,7 @@ function Home() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-    <Navbar />
+    {/* <Navbar /> */}
     <img className="w-full h-80" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4cWRHJSRcahsfYyhXjTipA7afW9JCUBt1rKgxBJRsiw&s" alt="img" />
     
     <div className="flex flex-grow mt-4 ml-2">

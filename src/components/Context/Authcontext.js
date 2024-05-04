@@ -5,7 +5,7 @@ export const AuthContext = createContext({
     setIsLogin: () => {},
     setUsernameInput: () => {},
     usernameInput:null,
-    
+  
 });
 
 export const useAuthContext = () => useContext(AuthContext);
@@ -13,6 +13,7 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthContextProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
     const [usernameInput, setUsernameInput] = useState(null);
+
     const login = () => {
 
         setIsLogin(true);

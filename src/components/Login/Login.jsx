@@ -8,7 +8,7 @@ function Login() {
   const [password, setpassword] = useState('');
   const { setIsLogin,isLogin,usernameInput } = useAuthContext();
   const navigate = useNavigate();
-  function handleButton(e) {
+   function handleButton(e) {
     e.preventDefault()
     console.log(username, password);
     try {
@@ -23,9 +23,12 @@ function Login() {
           const data = await res.json();
           if (data && data.token) {
             console.log(data);
+            
             console.log(data.result.username);
+           
             localStorage.setItem("token", data.token);
             setIsLogin(true);
+localStorage.setItem("userid",data.result._id)
             localStorage.setItem("username", data.result.username);
             navigate("/home");
           }
@@ -47,6 +50,7 @@ function Login() {
         localStorage.setItem("username", usernameInput); 
       }
     }, [isLogin]);
+    
   }
   return (
     <>
