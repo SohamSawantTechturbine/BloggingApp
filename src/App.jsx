@@ -10,6 +10,7 @@ import CreateBlog from './components/CreateBlog/CreateBlog';
 import ViewBlog from './ViewBlog/ViewBlog';
 import UpdateBlog from './components/UpdateBlog/UpdateBlog';
 import { Navbar } from './components/Navbar/Navbar'; // Ensure the correct import path
+import Contact from './components/Contactus/Contact';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,10 +24,7 @@ function App() {
       <AuthContextProvider>
       <Navbar onSearchChange={handleSearchChange} />
         <Routes>
-        {/* <Route
-            path="/navbar"
-            element={<Navbar onSearchChange={handleSearchChange} />}
-          /> */}
+        
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -36,7 +34,7 @@ function App() {
           <Route path="/CreateBlog" element={<CreateBlog />} />
           <Route path="/viewblog" element={<ViewBlog />} />
           <Route path="/updateblog" element={<UpdateBlog />} />
-          {/* Ensure that onSearchChange is passed to Navbar component */}
+          <Route path="/contact" element={<Contact/>}/>
          
         </Routes>
       </AuthContextProvider>

@@ -9,16 +9,20 @@ function ViewBlog(props) {
     const navigate = useNavigate();
     const location = useLocation();
     const { isLogin } = useAuthContext();
-    const { title, desc, category, file, token, username, _id, loginid } = location.state.blog;
+    const { title, desc, category, file, token, username, _id, loginid,likeCount,dislikeCount } = location.state.blog;
     const [vtitle, setTitle] = useState(title);
     const [vdesc, setDesc] = useState(desc);
     const [vcategory, setCategory] = useState(category);
     const [vfile, setFile] = useState(file);
     const [isAuthor, setIsAuthor] = useState(false);
-    
+
     const [comment, setComment] = useState("");
     const [commentdata, setCommentData] = useState("");
-  
+
+   const[likedata,setlikedata]=useState("");
+   const[dislikedata,setdislikedata]=useState("");
+
+
     const loggedInUsername = localStorage.getItem('username');
     const loggedInUserToken = localStorage.getItem('token');
     const loggedInid = localStorage.getItem('userid');
@@ -61,7 +65,33 @@ function ViewBlog(props) {
         fetchCommentData();
     }, [commentdata]);
 
+
+    useEffect(() => {
+        const fetchLikeData = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/view-like", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ _id })
+                });
     
+                if (!response.ok) {
+                    throw new Error('Failed to fetch like data');
+                }
+    
+                const data = await response.json();
+                
+                setlikedata(data.likeCount);
+                setdislikedata(data.dislikeCount);
+            } catch (error) {
+                console.error('Error fetching like data:', error);
+            }
+        };
+    
+        fetchLikeData(); 
+    }, [likedata,dislikedata]);
 
     const handleUpdate = () => {
         navigate("/updateblog", { state: { title, desc, category, file, token, username, _id } })
@@ -84,48 +114,101 @@ function ViewBlog(props) {
     };
 
     const handleComment = async () => {
-      if(loggedInid){
-        try {
-            const response = await fetch("http://localhost:5000/comment-blog", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ comment, _id, loggedInUserToken, loggedInUsername, loggedInid }),
-            });
+        if (loggedInid) {
+            try {
+                const response = await fetch("http://localhost:5000/comment-blog", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ comment, _id, loggedInUserToken, loggedInUsername, loggedInid }),
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to post comment');
+                if (!response.ok) {
+                    throw new Error('Failed to post comment');
+                }
+
+                const data = await response.json();
+                console.log("Comment posted successfully:", data);
+
+                // Update UI or perform any other actions
+            } catch (error) {
+                console.error("Error posting comment:", error.message);
             }
-
-            const data = await response.json();
-            console.log("Comment posted successfully:", data);
-
-            // Update UI or perform any other actions
-        } catch (error) {
-            console.error("Error posting comment:", error.message);
-        }}
-        else{
+        }
+        else {
             alert("please login")
         }
     };
-   const handleDeletecomment=async(_id)=>{
-    console.log(_id);
-    fetch("http://localhost:5000/deletecomment", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id })
-    }).then(res => {
-        if (res.ok) {
-            toast.success("blog Deleted")
-            navigate("/home")
-        } else {
-            toast.error('not possible now server is down')
-        }
-    })
 
-   }
+    const handleLike = async () => {
+        if (loggedInid) {
+        try {
+            const response = await fetch("http://localhost:5000/like-blog", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${loggedInUserToken}`,
+                },
+                body: JSON.stringify({ _id, loggedInid }),
+            });
+            setlikedata(prevCount => prevCount + 1);
+            if (!response.ok) {
+                throw new Error('Failed to like blog');
+            }
+    
+            // Update UI or perform any other actions
+        } catch (error) {
+            console.error("Error liking blog:", error.message);
+        }
+    }else{
+        alert("please login to like")
+    }
+    };
+    
+    const handleDislike = async () => {
+        if (loggedInid) {
+        try {
+            const response = await fetch("http://localhost:5000/dislike-blog", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${loggedInUserToken}`,
+                },
+                body: JSON.stringify({ _id, loggedInid }),
+            });
+            setdislikedata(prevCount => prevCount + 1);
+            if (!response.ok) {
+                throw new Error('Failed to dislike blog');
+            }
+    
+            // Update UI or perform any other actions
+        } catch (error) {
+            console.error("Error disliking blog:", error.message);
+        }
+    }
+    else{
+        alert("please login to dislike ")
+    }
+    };
+    
+    const handleDeletecomment = async (_id) => {
+        console.log(_id);
+        fetch("http://localhost:5000/deletecomment", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id })
+        }).then(res => {
+            if (res.ok) {
+                toast.success("blog Deleted")
+                navigate("/home")
+            } else {
+                toast.error('not possible now server is down')
+            }
+        })
+
+    }
     return (
         <div>
             <ToastContainer />
@@ -133,6 +216,17 @@ function ViewBlog(props) {
                 <img className="w-full h-80 bg-white border border-black " src={`http://localhost:5000${vfile}`} alt="oops" />
                 <div className="ml-5 mt-3 ">
                     <div className="mb-4 mt-4">
+                        <div className="flex px-3 space-x-5">
+                            <div>
+                                <img onClick={handleLike} src="https://www.iconpacks.net/icons/2/free-instagram-like-icon-3507-thumb.png" alt="like" className='h-10 w-10' />
+                                <h3>{likedata}</h3>
+                            </div>
+                            <div>
+                                <img  onClick={handleDislike}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwdcgH9ox32OQLFDhfD9zflycihYQeF8A8QQTqzzZkoQ&s" alt="dislike" className='h-10 w-10 px-2' />
+                                <h3>{dislikedata}</h3>
+                            </div>
+                        </div>
+
                         <div className="flex justify-between items-center">
                             <div>
                                 <label htmlFor="author" className="font-bold">Author:</label>
@@ -183,7 +277,7 @@ function ViewBlog(props) {
                                         </div>
                                     </div>
                                     <p className="text-gray-600 mt-5 px-3 ml-2 flex-grow">{comment.comment}</p>
-                                  {comment.commentauthorid === loggedInid &&  <img onClick={()=>handleDeletecomment(comment._id)} className="h-10 cursor-pointer mt-5" src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete" />}
+                                    {comment.commentauthorid === loggedInid && <img onClick={() => handleDeletecomment(comment._id)} className="h-10 cursor-pointer mt-5" src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete" />}
                                 </div>
                             ))}
                         </div>

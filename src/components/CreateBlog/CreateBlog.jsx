@@ -4,13 +4,15 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useAuthContext } from '../Context/Authcontext';
 import { useNavigate } from 'react-router-dom';
+
+import  Laptop  from '../../assets/laptop.jpg';
 function CreateBlog() {
   const navigate = useNavigate();
   const { isLogin } = useAuthContext();
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [category, setCategory] = useState('');
-  const [file, setFile] = useState("https://i.pinimg.com/736x/90/07/5b/90075b356eb2f0cf95e08b53a719f669.jpg");
+  const [file, setFile] = useState(`${Laptop}`);
   const [fileshow, setFileshow] = useState("https://i.pinimg.com/736x/90/07/5b/90075b356eb2f0cf95e08b53a719f669.jpg");
   const categories = ['Music', 'Movies', 'Sports', 'Tech', 'Fashion'];
   const username = localStorage.getItem('username');
@@ -25,7 +27,8 @@ function CreateBlog() {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('token', localStorage.getItem('token'));
-    formData.append('file', file);
+    formData.append('file', file );
+    
     formData.append('title', title);
     formData.append('desc', desc);
     formData.append('category', category);
@@ -74,6 +77,7 @@ const handleFileChange = (e) => {
         setFile(selectedFile);
     }
 };
+
 
   return (
     <>
