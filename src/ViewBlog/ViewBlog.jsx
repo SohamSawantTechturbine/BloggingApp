@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar/Navbar';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Arrow from '../assets/arrow.png'
 import { useAuthContext } from '../components/Context/Authcontext';
 
@@ -9,7 +10,7 @@ function ViewBlog(props) {
     const navigate = useNavigate();
     const location = useLocation();
     const { isLogin } = useAuthContext();
-    const { title, desc, category, file, token, username, _id, loginid,likeCount,dislikeCount } = location.state.blog;
+    const { title, desc, category, file, token, username, _id, loginid,date} = location.state.blog;
     const [vtitle, setTitle] = useState(title);
     const [vdesc, setDesc] = useState(desc);
     const [vcategory, setCategory] = useState(category);
@@ -94,18 +95,19 @@ function ViewBlog(props) {
     }, [likedata,dislikedata]);
 
     const handleUpdate = () => {
-        navigate("/updateblog", { state: { title, desc, category, file, token, username, _id } })
+        navigate("/updateblog", { state: { title, desc, category, file, token, username, _id} })
         console.log("will update the data ");
     };
 
-    const handleDelete = () => {
+    const handleDelete = async() => {
         fetch("http://localhost:5000/deleteblog", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ _id })
         }).then(res => {
             if (res.ok) {
-                toast.success("blog Deleted")
+              toast.success("blog Deleted")
+              
                 navigate("/home")
             } else {
                 toast.error('not possible now server is down')
@@ -138,7 +140,7 @@ function ViewBlog(props) {
             }
         }
         else {
-            alert("please login")
+            toast.error("please login ...")
         }
     };
 
@@ -163,7 +165,8 @@ function ViewBlog(props) {
             console.error("Error liking blog:", error.message);
         }
     }else{
-        alert("please login to like")
+        // alert("please login to like")
+        toast.error("please login ...")
     }
     };
     
@@ -189,7 +192,7 @@ function ViewBlog(props) {
         }
     }
     else{
-        alert("please login to dislike ")
+        toast.error("please login ...")
     }
     };
     
@@ -201,8 +204,8 @@ function ViewBlog(props) {
             body: JSON.stringify({ _id })
         }).then(res => {
             if (res.ok) {
-                toast.success("blog Deleted")
-                navigate("/home")
+                toast.success("comment deleted")
+                // navigate("/home")
             } else {
                 toast.error('not possible now server is down')
             }
@@ -212,7 +215,11 @@ function ViewBlog(props) {
     return (
         <div>
             <ToastContainer />
-            <div className="flex flex-col bg-gray-100 h-screen">
+            <div  className='mr-10'>
+                            <label htmlFor="description" className="font-bold">Date:</label>
+                            <span id="description" >{date}</span>
+                        </div>
+            <div className="flex flex-col bg-purple-50 h-screen">
                 <img className="w-full h-80 bg-white border border-black " src={`http://localhost:5000${vfile}`} alt="oops" />
                 <div className="ml-5 mt-3 ">
                     <div className="mb-4 mt-4">
@@ -225,8 +232,9 @@ function ViewBlog(props) {
                                 <img  onClick={handleDislike}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwdcgH9ox32OQLFDhfD9zflycihYQeF8A8QQTqzzZkoQ&s" alt="dislike" className='h-10 w-10 px-2' />
                                 <h3>{dislikedata}</h3>
                             </div>
+                            
                         </div>
-
+                       
                         <div className="flex justify-between items-center">
                             <div>
                                 <label htmlFor="author" className="font-bold">Author:</label>
@@ -257,8 +265,11 @@ function ViewBlog(props) {
                             <label htmlFor="description" className="font-bold">Description:</label>
                             <span id="description" className="ml-2">{vdesc}</span>
                         </div>
+                       
                     </div>
                 </div>
+
+
                 <div className='flex ml-3 mt-5 py-2'>
                     <img className="h-10 px-3 " src="https://www.shutterstock.com/image-vector/comments-icon-on-white-background-260nw-247489372.jpg" alt="Comments icon"></img>
                     <textarea onChange={(e) => setComment(e.target.value)} className='border border-rounded border-black rounded-md h-12 px-2 py-1 w-80' placeholder='Comment'></textarea>

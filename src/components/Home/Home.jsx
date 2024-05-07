@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navbar}  from '../Navbar/Navbar';
 import { useAuthContext } from '../Context/Authcontext';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import coursel from '../../assets/Untitled.png'
 function Home({searchTerm}) {
   const { isLogin } = useAuthContext();
   const [username, setUsername] = useState('user');
@@ -27,7 +27,7 @@ function Home({searchTerm}) {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({}) // If you need to send any data with the request, you can add it here
+          body: JSON.stringify({}) 
         });
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -56,13 +56,15 @@ function Home({searchTerm}) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div>
+       <img className="w-full h-100" src={coursel} alt="img" />
+    <div className="flex flex-col h-full bg-red-300">
     {/* <Navbar /> */}
-    <img className="w-full h-80" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4cWRHJSRcahsfYyhXjTipA7afW9JCUBt1rKgxBJRsiw&s" alt="img" />
+   
     
-    <div className="flex flex-grow mt-4 ml-2">
-      <div className="w-1/6 bg-white rounded-lg overflow-hidden shadow-lg">
-        <table className="w-full text-sm text-left rtl:text-right border border-black text-black">
+    <div className="flex flex-grow mt-4 ml-2 ">
+      <div className=" mt-2 w-1/6 bg-white rounded-lg overflow-hidden shadow-lg h-60">
+        <table className=" mt-2 w-full text-sm text-left rtl:text-right border border-black text-black">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="py-2" onClick={() => navigate(`/home`)}>Category</th>
@@ -87,8 +89,8 @@ function Home({searchTerm}) {
           </tbody>
         </table>
       </div>
-    
-      <div className="w-5/6"> {/* Adjusted width */}
+      
+      <div className="w-5/6 "> {/* Adjusted width */}
         <div className='py-2 ml-3 grid grid-cols-3 gap-4'>
           {filteredBlog?.map((item, index) => (
             <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 aspect-w-2 aspect-h-2 border border-black" onClick={() => handleview(item)} style={{ minWidth: '60px', minHeight: '60px' }}>
@@ -105,7 +107,7 @@ function Home({searchTerm}) {
       </div>
     </div>
   </div>
-  
+  </div>
   );
 }
 

@@ -1,14 +1,16 @@
-import React, { useState ,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, json } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../Context/Authcontext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function Login() {
 
   const [username, setusername] = useState('');
   const [password, setpassword] = useState('');
-  const { setIsLogin,isLogin,usernameInput } = useAuthContext();
+  const { setIsLogin, isLogin, usernameInput } = useAuthContext();
   const navigate = useNavigate();
-   function handleButton(e) {
+  function handleButton(e) {
     e.preventDefault()
     console.log(username, password);
     try {
@@ -23,16 +25,17 @@ function Login() {
           const data = await res.json();
           if (data && data.token) {
             console.log(data);
-            
+
             console.log(data.result.username);
-           
+
             localStorage.setItem("token", data.token);
             setIsLogin(true);
-localStorage.setItem("userid",data.result._id)
+            localStorage.setItem("userid", data.result._id)
             localStorage.setItem("username", data.result.username);
+            localStorage.setItem("userimage",data.result.file);
             navigate("/home");
           }
-         
+
         }
         else {
           throw new Error("Invalid username or password");
@@ -47,13 +50,14 @@ localStorage.setItem("userid",data.result._id)
     }
     useEffect(() => {
       if (isLogin) {
-        localStorage.setItem("username", usernameInput); 
+        localStorage.setItem("username", usernameInput);
       }
     }, [isLogin]);
-    
+
   }
   return (
     <>
+      <ToastContainer />
       <section class="bg-gray-50 bg-white">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto  h-180 md:h-screen lg:py-0">
           <div className=" mt-60 w-full  h-1000 md:mt-0 sm:max-w-md xl:p-0  border-white rounded-lg" style={{ backgroundImage: 'url("https://img.freepik.com/free-vector/background-realistic-abstract-technology-particle_23-2148431735.jpg?size=626&ext=jpg")' }}>
