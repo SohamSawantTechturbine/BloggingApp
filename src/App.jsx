@@ -11,6 +11,8 @@ import ViewBlog from './ViewBlog/ViewBlog';
 import UpdateBlog from './components/UpdateBlog/UpdateBlog';
 import { Navbar } from './components/Navbar/Navbar'; // Ensure the correct import path
 import Contact from './components/Contactus/Contact';
+import Followed from './components/Followed/Followed';
+import Bookmark from './components/Bookmark/Bookmark';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +37,8 @@ function App() {
           <Route path="/viewblog" element={<ViewBlog />} />
           <Route path="/updateblog" element={<UpdateBlog />} />
           <Route path="/contact" element={<Contact/>}/>
-         
+         <Route path="/follow" element={<Followed/>}/>
+         <Route path="/bookmark" element={<Bookmark/>}/>
         </Routes>
       </AuthContextProvider>
     </BrowserRouter>

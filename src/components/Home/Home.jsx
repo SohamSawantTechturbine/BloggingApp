@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Navbar}  from '../Navbar/Navbar';
+import { Link } from 'react-router-dom'
 import { useAuthContext } from '../Context/Authcontext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import coursel from '../../assets/Untitled.png'
+import Dropdown from './Dropdown';
 function Home({searchTerm}) {
   const { isLogin } = useAuthContext();
   const [username, setUsername] = useState('user');
@@ -63,7 +65,9 @@ function Home({searchTerm}) {
    
     
     <div className="flex flex-grow mt-4 ml-2 ">
-      <div className=" mt-2 w-1/6 bg-white rounded-lg overflow-hidden shadow-lg h-60">
+      <div className=" mt-2 w-1/6 bg-white rounded-lg overflow-hidden shadow-lg h-100">
+     
+
         <table className=" mt-2 w-full text-sm text-left rtl:text-right border border-black text-black">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -88,6 +92,11 @@ function Home({searchTerm}) {
             </tr>
           </tbody>
         </table>
+        {/* <div className='mt-6'> 
+           <Dropdown/>
+      </div> */}
+
+
       </div>
       
       <div className="w-5/6 "> {/* Adjusted width */}

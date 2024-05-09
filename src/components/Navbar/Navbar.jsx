@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useAuthContext } from '../Context/Authcontext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Dropdown from '../Home/Dropdown';
 export const Navbar = ({ onSearchChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [USername, setUSername] = useState('user');
@@ -119,10 +120,18 @@ export const Navbar = ({ onSearchChange }) => {
                             <li>
                                 <Link to="/contact" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact US</Link>
                             </li>
+                           {/* <li>
+                            <Link to="follow" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Followed</Link>
+                           </li> */}
+                           {/* <li>
+                            <Link to="bookmark" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Bookmark Pages</Link>
+                           </li> */}
+                              <li>
+                                <Dropdown/>
+                              </li>
+                           
                         </ul>
-                        <div className="flex items-center">
-
-                        </div>
+                      
 
                     </div>
                 </div>

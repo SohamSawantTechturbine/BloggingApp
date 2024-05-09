@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Register() {
 
     const [username, setUsername] = useState('');
+    const [mail, setmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [file,setfile]=useState(null);
@@ -50,16 +51,36 @@ let userData = JSON.parse(localStorage.getItem("userData")) || [];
         
               saveData();
               toast.info("Registered successfully. You can click on the login button and enjoy.");
+              sendDatamail();
           }
       
           function saveData() {
               userData.push({ username, password });
               localStorage.setItem('userData', JSON.stringify(userData));
           }
-    function handleLogin() {
-        navigate("/");
-    }
-
+          async function sendDatamail() {
+            try {
+                const response = await fetch("http://localhost:5000/sendatamail", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, mail })
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Failed to send email');
+                }
+        
+                const data = await response.json();
+                toast.success(data.message);
+            } catch (error) {
+                toast.warning("Server is down");
+                console.error('Error:', error);
+            }
+        }
+        
+    
     function validateUsername() {
         setUserNameValid(username.trim() !== '');
     }
@@ -99,6 +120,11 @@ let userData = JSON.parse(localStorage.getItem("userData")) || [];
                             <div>
                                 <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Username</label>
                                 <input type="text" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} onBlur={validateUsername} className={`bg-gray-50 ${userNameValid ? 'border border-gray-300' : 'border-red-500'} text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 `} placeholder="Enter your username" required />
+                                {!userNameValid && <p className="text-red-500 text-xs italic">Username is required.</p>}
+                            </div>
+                            <div>
+                                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Username</label>
+                                <input type="text" name="username" id="username" value={mail} onChange={(e) =>setmail(e.target.value)} onBlur={validateUsername} className={`bg-gray-50 ${userNameValid ? 'border border-gray-300' : 'border-red-500'} text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 `} placeholder="Enter your username" required />
                                 {!userNameValid && <p className="text-red-500 text-xs italic">Username is required.</p>}
                             </div>
                             <div>

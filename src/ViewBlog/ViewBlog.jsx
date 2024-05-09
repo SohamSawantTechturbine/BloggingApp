@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Arrow from '../assets/arrow.png'
+import bookmark from "../assets/bookmark.png"
 import { useAuthContext } from '../components/Context/Authcontext';
 
 function ViewBlog(props) {
@@ -16,6 +17,9 @@ function ViewBlog(props) {
     const [vcategory, setCategory] = useState(category);
     const [vfile, setFile] = useState(file);
     const [isAuthor, setIsAuthor] = useState(false);
+
+    const [timer, setTimer] = useState(0);
+    const [hasRead, setHasRead] = useState(false);
 
     const [comment, setComment] = useState("");
     const [commentdata, setCommentData] = useState("");
@@ -64,7 +68,10 @@ function ViewBlog(props) {
             }
         }
         fetchCommentData();
-    }, [commentdata]);
+
+
+
+    }, []);
 
 
     useEffect(() => {
@@ -210,8 +217,125 @@ function ViewBlog(props) {
                 toast.error('not possible now server is down')
             }
         })
-
     }
+
+    const handlesubscribe = async () => {
+        if(loggedInid){
+        try {
+            const response = await fetch("http://localhost:5000/subscribe", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ loggedInid, loginid })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to subscribe/unsubscribe');
+            }
+    
+            const data = await response.json();
+    
+            if (data && data.message) {
+                toast.success(data.message);
+            } else {
+                throw new Error('Invalid response from server');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Failed to subscribe/unsubscribe');
+        }}
+        else{
+            toast.warning("login first")
+        }
+    };
+    
+
+
+  const handlebookmark = async () => {
+  if(loggedInid){
+    try {
+        console.log(_id, loggedInid);
+        // Send a request to the backend to check if the user is present and add/remove the bookmark
+        const response = await fetch("http://localhost:5000/check-bookmark", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ loggedInid,  _id })
+        });
+        const data = await response.json();
+        toast.success(data.message);
+        console.log(data);
+   
+    } catch (error) {
+        console.error('Error:', error);
+    }}
+    else{
+        toast.warning("login first")
+    }
+}
+
+
+
+
+
+
+
+useEffect(() => {
+
+ 
+
+    const interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 1);
+    }, 1000);
+
+    increaseViewCount();
+    return () => clearInterval(interval);
+}, []);
+
+
+const increaseViewCount = async () => {
+   if(loggedInid){
+    try {
+        await fetch("http://localhost:5000/increase-view", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ _id,loggedInid })
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }}
+};
+
+
+useEffect(() => {
+    const TWO_MINUTES = 120;
+    if (timer >= TWO_MINUTES && !hasRead) {
+        increaseReadCount();
+        setHasRead(true);
+    }
+}, [timer, hasRead]);
+
+// Increase read count in the backend
+const increaseReadCount = async () => {
+    if(loggedInid){
+    try {
+        await fetch("http://localhost:5000/increase-read", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ _id,loggedInid})
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }}
+};
+
+
     return (
         <div>
             <ToastContainer />
@@ -232,7 +356,13 @@ function ViewBlog(props) {
                                 <img  onClick={handleDislike}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwdcgH9ox32OQLFDhfD9zflycihYQeF8A8QQTqzzZkoQ&s" alt="dislike" className='h-10 w-10 px-2' />
                                 <h3>{dislikedata}</h3>
                             </div>
-                            
+                            <div className='flex justify-end '>
+                                <img src='https://cdn.pixabay.com/photo/2021/08/17/17/49/youtube-6553743_1280.png'  alt='subscribeimage'  onClick={handlesubscribe} className='cursor-pointer h-20 w-30'/>
+                            </div>
+                            <div className='flex justify-end '>
+                                <img src={bookmark}  alt='subscribeimage'  onClick={handlebookmark} className='cursor-pointer h-10 w-30'/>
+                                <h1 className='text-red-500'>Bookmark</h1>
+                            </div>
                         </div>
                        
                         <div className="flex justify-between items-center">
