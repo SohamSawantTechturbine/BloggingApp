@@ -13,6 +13,9 @@ import { Navbar } from './components/Navbar/Navbar'; // Ensure the correct impor
 import Contact from './components/Contactus/Contact';
 import Followed from './components/Followed/Followed';
 import Bookmark from './components/Bookmark/Bookmark';
+import Statics from './components/Statics/Statics';
+import Forgetpassword from './components/Forgetpassword/Forgetpassword';
+import Otp from './components/Forgetpassword/Otp';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,6 +42,9 @@ function App() {
           <Route path="/contact" element={<Contact/>}/>
          <Route path="/follow" element={<Followed/>}/>
          <Route path="/bookmark" element={<Bookmark/>}/>
+         <Route path="/statics" element={<Statics/>}/>
+         <Route path="/forgetpassword" element={<Forgetpassword/>}/>
+         <Route path="/otp" element={<Otp/>}/>
         </Routes>
       </AuthContextProvider>
     </BrowserRouter>

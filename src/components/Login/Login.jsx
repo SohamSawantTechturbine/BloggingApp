@@ -107,7 +107,14 @@ function Login() {
                   <Link to="register" className="font-medium text-primary-600 hover:underline text-green-100">
                     Sign up
                   </Link>
+
+                  
                 </p>
+                
+                  <Link to="forgetpassword" className="font-medium text-primary-600 hover:underline text-green-100">
+                   Forget password
+                  </Link>
+                
               </form>
             </div>
           </div>

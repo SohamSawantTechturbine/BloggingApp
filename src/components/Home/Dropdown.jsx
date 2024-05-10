@@ -44,12 +44,12 @@ function Dropdown() {
             >
               Bookmark
             </Link>
-            <a
-              href="#"
+            <Link
+               to="/statics"
               className="block px-4 py-2 text-sm text-black  border border-black bg-red-300 hover:bg-gray-100"
             >
               statics
-            </a>
+            </Link>
           </div>
         </div>
       )}
