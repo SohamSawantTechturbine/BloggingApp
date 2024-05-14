@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Otp() {
     const location = useLocation();
-    const { username } = location.state;
+    const { username ,mail} = location.state;
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const [password, setPassword] = useState('');
     const navigate=useNavigate();
@@ -43,6 +43,30 @@ function Otp() {
         
     };
 
+    async function handleGenrateotp(){
+        try {
+            const response = await fetch("http://localhost:5000/sendforget-datapass", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username,  mail })
+            })
+    
+            if (!response.ok) {
+                throw new Error('Failed to send email');
+            }
+    
+            const data = await response.json();
+             await toast.success(data.message);
+          //  navigate("/otp" ,{state:{username,mail}})
+        } catch (error) {
+            toast.warning(data.message);
+            console.error('Error:', error);
+        }
+       
+    }
+    
     function handleChange(e, index) {
         if (isNaN(e.target.value)) return false;
         setOtp([...otp.map((data, indx) => (indx === index ? e.target.value : data))]);
@@ -94,6 +118,7 @@ function Otp() {
                             Submit
                         </button>
                     </form>
+                    <p className='text-blue-500 mt-5' onClick={handleGenrateotp}>Generte new Otp?</p>
                 </div>
             </div>
         </div>

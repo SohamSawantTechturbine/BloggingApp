@@ -27,7 +27,7 @@ function Forgetpassword() {
         
                 const data = await response.json();
                  await toast.success(data.message);
-                navigate("/otp" ,{state:{username}})
+                navigate("/otp" ,{state:{username,mail}})
             } catch (error) {
                 toast.warning(data.message);
                 console.error('Error:', error);

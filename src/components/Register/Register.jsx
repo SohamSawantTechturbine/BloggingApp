@@ -33,7 +33,9 @@ let userData = JSON.parse(localStorage.getItem("userData")) || [];
         formData.append('file', file);
         fetch("http://localhost:5000/register-data",{
             method:"POST",
-           
+            // headers: {
+            //     'Content-Type': 'multipart/form-data'
+            //   },
             body:formData
 
             
@@ -97,15 +99,15 @@ let userData = JSON.parse(localStorage.getItem("userData")) || [];
         const selectedFile = e.target.files[0];
     if (selectedFile) {
         const reader = new FileReader();
-        reader.onload = () => {
-            if (reader.readyState === 2) {
-                setfile(reader.result);
-            }
+        // reader.onload = () => {
+        //     if (reader.readyState === 2) {
+        //         setfile(reader.result);
+        //  }
         };
         reader.readAsDataURL(selectedFile);
         setfile(selectedFile);
     }
-    }
+    
   return (
     <div>
         <ToastContainer/>
