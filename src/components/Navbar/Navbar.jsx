@@ -9,6 +9,7 @@ export const Navbar = ({ onSearchChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [USername, setUSername] = useState('user');
     const userimage = localStorage.getItem("userimage");
+    console.log(userimage);
     const { usernameInput, setIsLogin, isLogin } = useAuthContext();
     const logoutacc = () => {
         localStorage.removeItem("username");
@@ -69,13 +70,21 @@ export const Navbar = ({ onSearchChange }) => {
                         </div>
 
                         <div className=" ml-4 flex items-center">
-                            {USername && (
+                        {USername && userimage && userimage !== "undefined" ? (
+    <div className="mr-2 text-black text-lg dark:text-white px-2">{USername}
+        <img src={`http://localhost:5000${userimage}`} className="border rounded-lg h-5" alt='image'/>
+        {console.log("if")}  {console.log(userimage, typeof(userimage))}
+    </div>
+) : (
+    <div className="mr-2 text-black text-lg dark:text-white px-2">{USername}
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/036/280/650/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" className="border rounded-lg h-5" alt='image'/>
+        {console.log("ifcccc")}   {console.log(userimage, typeof(userimage))}
+    </div>
+)}
 
-                                <div className=" mr-2 text-black text-lg dark:text-white px-2">{USername}
-                                <img src={`http://localhost:5000${userimage}` }className="border rounded-lg h-5" alt='image'/>
-                                </div>
-                                 
-                            )}
+
+
+
                             {USername !== 'user' && (
                                 <button
                                     className="mr-2 text-black text-lg border rounded-lg shadow bg-yellow-100 dark:text-white px-2  hover:bg-yellow-500 "
